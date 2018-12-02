@@ -1,0 +1,30 @@
+html,
+body,
+#main {
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar {
+  min-height: 100vh;
+  padding: 0;
+}
+
+#sidebar h4 {
+  font-size: 18px;
+  padding-left: 15px;
+  color: #fff;
+  font-weight: 500;
+}
+
+#sidebar li a {
+  display: block;
+  padding: 15px;
+  font-size: 14px;
+  color: #fff;
+}
+
+#sidebar li a:hover,
+#sidebar li a.active {
+  background-color: #3b1070;
+}

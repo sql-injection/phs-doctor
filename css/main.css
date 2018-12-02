@@ -1,0 +1,41 @@
+.progress {
+  background-color: #b39ddb;
+}
+
+.progress .indeterminate {
+  background-color: #4527a0;
+}
+
+h5 {
+  padding-top: 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.subheader {
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.subheader span {
+  font-weight: 700;
+}
+
+.details {
+  text-align: center;
+  font-size: 14px;
+}
+
+.details span {
+  font-weight: 700;
+}
+
+.section-container {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ccc;
+}
+
+.section-container:last-child {
+  border-bottom: none;
+}

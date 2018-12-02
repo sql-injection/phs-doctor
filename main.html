@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="scripts/moment.min.js"></script>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>Doctor Facing App</title>
+  </head>
+  <body>
+    <div>
+      <div class="row" id="main">
+        <div class="col s3 purple darken-4" id="sidebar">
+          <h4>Patient HR Analysis</h4>
+          <ul>
+            <li><a class="active">Heart Rate Analysis Dashboard</a></li>
+            <li><a href="messages.html">Messages</a></li>
+          </ul>
+        </div>
+        <div class="col s9" id="patient-container">
+          <ul class="collapsible"></ul>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/global.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/request.js"></script>
+  <script src="scripts/timestamp.js"></script>
+  <script src="scripts/main.js"></script>
+</html>
