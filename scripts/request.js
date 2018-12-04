@@ -38,3 +38,26 @@ function sendMessage(
     dataType: "json"
   });
 }
+
+function getPatientMedicalInfo(
+  firstName,
+  lastName,
+  start,
+  end,
+  successCallback,
+  errorCallback
+) {
+  $.get(
+    API_URL +
+      "/patient/" +
+      lastName +
+      "/" +
+      firstName +
+      "?start=" +
+      start +
+      "&end=" +
+      end
+  )
+    .done(successCallback)
+    .fail(errorCallback);
+}

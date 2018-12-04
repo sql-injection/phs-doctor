@@ -204,6 +204,49 @@ function handlePatientMetrics(payload) {
   }
 }
 
+function renderMedicationAndDiseases($patient, diseases, medications) {
+  console.log($patient, diseases, medications);
+  var $cardContent = $patient.find(".card-content");
+  var medicationHtml =
+    '<div class="patient-medication"><b>Medications:</b><br><ul>';
+
+  var diseaseHtml =
+    '<div class="patient-disease"><b>Diagnosed Diseases:</b><br><ul>';
+
+  for (var i = 0; i < medications.length; ++i) {
+    medicationHtml +=
+      '<li><a target="_blank" href="' +
+      medications[i].url +
+      '">' +
+      medications[i].name +
+      "</a></li>";
+  }
+  medicationHtml += "</ul></div>";
+  $cardContent.append(medicationHtml);
+
+  for (var i = 0; i < diseases.length; ++i) {
+    diseaseHtml +=
+      '<li><a target="_blank" href="' +
+      diseases[i].url +
+      '">' +
+      diseases[i].name +
+      "</a></li>";
+  }
+  diseaseHtml += "</ul></div>";
+  $cardContent.append(diseaseHtml);
+}
+
+function handleMedicalInfo(payload) {
+  const $self = $(this);
+  if (payload.meta.status_code === 200) {
+    const diseases = payload.response.diseases;
+    const medications = payload.response.medications;
+    renderMedicationAndDiseases($self, diseases, medications);
+  } else {
+    // Render error
+  }
+}
+
 function bindClickOntoPatients() {
   const $patient = $(".patient-row");
   $patient.click(function(e) {
@@ -231,6 +274,13 @@ function bindClickOntoPatients() {
       const nls = window.localStorage.getItem(key + "_nls");
 
       $(this).data("loading", true);
+      getPatientMedicalInfo(
+        $self.data("first-name"),
+        $self.data("last-name"),
+        minTimestamp,
+        maxTimestamp,
+        handleMedicalInfo.bind(this)
+      );
       if (tds && nls) {
         renderMeasures($(this), JSON.parse(tds), JSON.parse(nls));
       } else {
@@ -286,6 +336,5 @@ function handlePatientsResponse(payload) {
 }
 
 $(document).ready(function() {
-  console.log(window.localStorage);
   getAllPatients(handlePatientsResponse);
 });
