@@ -12,6 +12,15 @@ h5 {
   font-weight: 700;
 }
 
+.card-content h5 {
+  padding: 0;
+  margin-top: 0;
+}
+
+.card .card-content p {
+  margin-bottom: 10px;
+}
+
 .subheader {
   margin-left: 5px;
   margin-bottom: 10px;

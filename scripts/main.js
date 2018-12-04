@@ -95,10 +95,20 @@ function renderMeasures($patient, timeDomainMeasures, nonLinearMeasures) {
   loaded($patient);
 
   $body.append(
-    '<div class="time">' +
-      window.current_start.toDate() +
+    '<div class="card horizontal"><div class="card-content"><h5>Patient Information</h5><p><b>Full name: </b>' +
+      $patient.data("first-name") +
+      " " +
+      $patient.data("last-name") +
+      "</p><p><b>Birth date: </b>" +
+      $patient.data("birth-date") +
+      "</p></div></div>"
+  );
+
+  $body.append(
+    '<div class="time">Analysis over ' +
+      moment.unix(window.current_start).toDate() +
       " - " +
-      window.current_end.toDate() +
+      moment.unix(window.current_end).toDate() +
       "</div>"
   );
 
@@ -174,7 +184,19 @@ function handlePatientMetrics(payload) {
     const timeDomainMeasures = payload.response.time_domain_measures;
     const nonLinearMeasures = payload.response.non_linear_measures;
     const $self = $(this);
+    const key = "patient_" + $self.data("id");
+
     clearError($self);
+
+    window.localStorage.setItem(
+      key + "_tds",
+      JSON.stringify(timeDomainMeasures)
+    );
+    window.localStorage.setItem(
+      key + "_nls",
+      JSON.stringify(nonLinearMeasures)
+    );
+
     renderMeasures($self, timeDomainMeasures, nonLinearMeasures);
     $("#sidebar").trigger("rowheight");
   } else {
@@ -185,36 +207,40 @@ function handlePatientMetrics(payload) {
 function bindClickOntoPatients() {
   const $patient = $(".patient-row");
   $patient.click(function(e) {
-    const id = $(this).data("id");
-    const isLoading = $(this).data("loading");
-    const hasLoaded = $(this).data("loaded");
-    const isOpening = !$(this).hasClass("active");
+    const $self = $(this);
+    const id = $self.data("id");
+    const minTimestamp = $self.data("start");
+    const maxTimestamp = $self.data("end");
+    const isLoading = $self.data("loading");
+    const hasLoaded = $self.data("loaded");
+    const isOpening = !$self.hasClass("active");
 
     // Fetch data if:
     //  1) Data is not currently loading
     //  2) Data has not already loaded in this session
     //  3) Patient data is being opened, not closed
     if (!isLoading && !hasLoaded && isOpening) {
-      if (
-        !window.patient_time_dicts ||
-        window.patient_time_dicts[id] === "undefined"
-      ) {
-        return;
-      }
+      var ts = new Timestamps();
+      ts.addPatient(id, minTimestamp, maxTimestamp);
+      window.times = ts;
+      window.current_start = minTimestamp;
+      window.current_end = maxTimestamp;
 
-      const defaultTimeWindow =
-        window.patient_time_dicts[id - 1]["days"][0]["all"];
-
-      window.current_start = defaultTimeWindow[0];
-      window.current_end = defaultTimeWindow[1];
+      const key = "patient_" + id;
+      const tds = window.localStorage.getItem(key + "_tds");
+      const nls = window.localStorage.getItem(key + "_nls");
 
       $(this).data("loading", true);
-      getPatientMetrics(
-        id,
-        defaultTimeWindow[0].unix(),
-        defaultTimeWindow[1].unix(),
-        handlePatientMetrics.bind(this)
-      );
+      if (tds && nls) {
+        renderMeasures($(this), JSON.parse(tds), JSON.parse(nls));
+      } else {
+        getPatientMetrics(
+          id,
+          minTimestamp,
+          maxTimestamp,
+          handlePatientMetrics.bind(this)
+        );
+      }
     } else {
       $("#sidebar").trigger("rowheight");
     }
@@ -229,11 +255,24 @@ function handlePatientsResponse(payload) {
     const id = patients[i][0];
     const firstName = patients[i][1];
     const lastName = patients[i][2];
+    const birthDate = patients[i][3];
+    const minTimestamp = patients[i][4];
+    const maxTimestamp = patients[i][5];
     $patientContainer.append(
       '<li id="patient-' +
         id +
         '" class="patient-row" data-loaded=false data-loading=false data-id="' +
         id +
+        '" data-start="' +
+        minTimestamp +
+        '" data-end="' +
+        maxTimestamp +
+        '" data-first-name="' +
+        firstName +
+        '" data-last-name="' +
+        lastName +
+        '" data-birth-date="' +
+        birthDate +
         '"><div class="collapsible-header">' +
         firstName +
         " " +
@@ -247,5 +286,6 @@ function handlePatientsResponse(payload) {
 }
 
 $(document).ready(function() {
+  console.log(window.localStorage);
   getAllPatients(handlePatientsResponse);
 });
