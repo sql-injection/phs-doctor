@@ -89,7 +89,7 @@ function generateTimeDomainBody(
 }
 
 function renderMeasures($patient, timeDomainMeasures, nonLinearMeasures) {
-  const expectedTimeDomainMeasures = ["ANN", "SDNN", "rMSSD", "pNN20", "pNN50"];
+  const expectedTimeDomainMeasures = ["ANN", "SDNN", "RMSSD", "pNN20", "pNN50"];
   const $body = $patient.find(".collapsible-body");
 
   loaded($patient);
